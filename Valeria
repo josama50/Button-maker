@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Button Maker</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            text-align: center; 
+            background-color: #fce4ec;
+            color: #d81b60;
+        }
+        .container { 
+            max-width: 400px; 
+            margin: auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .preview { 
+            width: 200px; 
+            height: 200px; 
+            border: 2px solid #d81b60; 
+            margin-top: 10px; 
+            border-radius: 50%;
+        }
+        .hidden { display: none; }
+        button {
+            background-color: #d81b60;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #c2185b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎉 Happy Button Maker 🎨</h2>
+        <p>Upload your picture and make your own custom button!</p>
+        <input type="file" id="imageUpload" accept="image/*">
+        <div>
+            <canvas id="canvas" class="preview hidden"></canvas>
+        </div>
+        <br>
+        <input type="text" id="requestNotes" placeholder="Enter any request notes">
+        <br><br>
+        <button id="downloadBtn" class="hidden">Download Your Button</button>
+    </div>
+    
+    <script>
+        const imageUpload = document.getElementById('imageUpload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const requestNotes = document.getElementById('requestNotes');
+
+        imageUpload.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        canvas.width = 200;
+                        canvas.height = 200;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.classList.remove('hidden');
+                        downloadBtn.classList.remove('hidden');
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        downloadBtn.addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'button_image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
